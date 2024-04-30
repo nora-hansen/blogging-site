@@ -5,7 +5,9 @@ namespace BlogAPI.Models
         public int Id { get; set; }
         public string Content { get; set; }
         public DateTime CommentDate { get; set; }
+        public int UserID { get; set; }
         public User CommentingUser { get; set; }
+        public int PostID { get; set; }
         public Post OriginalPost { get; set; }
 
         public DateTime CreatedAt { get; set; }

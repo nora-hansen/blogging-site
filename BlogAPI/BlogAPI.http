@@ -4,3 +4,8 @@ GET {{BlogAPI_HostAddress}}/weatherforecast/
 Accept: application/json
 
 ###
+
+GET {{BlogAPI_HostAddress}}/api/users/
+Accept: application/json
+
+###
