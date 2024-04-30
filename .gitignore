@@ -403,3 +403,8 @@ appsettings.Development.json
 
 ../appsettings.json
 ../appsettings.Development.json
+/BlogAPI/appsettings.json
+/BlogAPI/appsettings.Development.json
+/BlogAPI/Migrations/20240430122006_InitialCreate.cs
+/BlogAPI/Migrations/20240430122006_InitialCreate.Designer.cs
+/BlogAPI/Migrations/BlogContextModelSnapshot.cs

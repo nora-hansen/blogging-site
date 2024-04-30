@@ -1,16 +1,17 @@
+using System.ComponentModel.DataAnnotations.Schema;
+
 namespace BlogAPI.Models
 {
     public class User
     {
-        private int Id { get; set; }
-        private string Email { get; set; }
-        private string Password { get; set; }
-        private string displayName { get; set; }
-        private string? iconUrl { get; set; }
-        /*
-        private List<User> friends { get; set; }
-        private List<User> blocks { get; set; }
-        private List<Post> posts { get; set; }
-        private List<Comment> comments { get; set; }
-        */
+        public int Id { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public string DisplayName { get; set; }
+        public string? IconUrl { get; set; }
+        public ICollection<User> Friends { get; set; }
+        // //public ICollection<User> Blocks { get; set; }
+        public ICollection<Post> Posts { get; set; }
+        public ICollection<Comment> Comments { get; set; }
+    }
 }
