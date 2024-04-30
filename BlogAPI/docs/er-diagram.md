@@ -16,11 +16,20 @@ classDiagram
 	Post : +int ID
 	Post : +Date postDate
 	Post : +string content
+	Post : +string Title
 	Post : +int userId
-	Post : +List tags
 	Post : +List media 
+	Post : -addComment()
+
+	Comment : +int ID
+	Comment : +Date commentDate
+	Comment : +string content
+	Comment : +int UserID
+	Comment : +int PostID
 
 	Post ..> User : 1..1
+	Comment ..> User : 1..1
+	Post ..> Comment : 0..*
 	User .. User : 0..*
 	User .. User : 0..*
 ```
