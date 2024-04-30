@@ -1,0 +1,38 @@
+openapi: 3.1.0
+info:
+    title: Blogging API
+    description: API for Blogging site
+    version: 0.0.4
+    contact: 
+        name: Blogging
+
+servers:
+    -   url: http://localhost:5182
+tags:
+    -   name: users
+paths:
+    /api/users:
+        get:
+            tags:
+                -   users
+            operationId: getUsers
+            summary: Route to use to get all users
+            description: Get all users
+            responses:
+                '200':
+                    description: Get all users
+                    content: 
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AllUsers'
+        post:
+            tags:
+                -   users
+            operationId: createUser
+            summary: Route to use (with payload) to create a new user
+            description: Create new user
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateUser'
