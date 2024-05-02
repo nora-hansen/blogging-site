@@ -1,0 +1,254 @@
+openapi: 3.1.0
+info:
+    title: Blogging API
+    description: API for Blogging site
+    version: 0.0.4
+    contact: 
+        name: Blogging
+
+servers:
+    -   url: http://localhost:5182
+tags:
+    -   name: users
+paths:
+    /api/users:
+        get:
+            tags:
+                -   users
+            operationId: getUsers
+            summary: Route to use to get all users
+            description: Get all users
+            responses:
+                '200':
+                    description: Get all users
+                    content: 
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/AllUsers'
+        post:
+            tags:
+                -   users
+            operationId: createUser
+            summary: Route to use (with payload) to create a new user
+            description: Create new user
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateUser'
+            responses:
+                '201':
+                    description: User created
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '400':
+                    description: "Missing fields"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error400MissingFields'
+    /api/users/{id}:
+        get:
+            parameters:
+                -   name: id
+                    in: path
+                    description: id of user
+                    required: true
+                    schema: 
+                        type: integer
+            tags:
+                -   users
+            summary: Get a specific user with their id
+            description: Get single user
+            operationId: GetSpecificUser
+            responses: 
+                '200':
+                    description: Get single user
+                    content:
+                        application/json:
+                            schema: 
+                                $ref: '#/components/schemas/User'
+                '404':
+                    description: "User not found"
+                    content: 
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error404UserNotFound'          
+        put:
+            tags:
+                -   users
+            summary: Use ID to get specific user to update
+            description: Update existing user
+            operationId: updateUser
+            parameters:
+                -   name: id
+                    in: path
+                    description: User ID
+                    required: true
+                    schema:
+                        type: integer
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/CreateUser'
+            responses:
+                '201':
+
+                    description: User successfully updated
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '404':
+                    description: "User not found"
+                    content: 
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error404UserNotFound'        
+                '400':
+                    description: "Missing fields"
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error400MissingFields'
+        delete:
+            tags:
+                -   users
+            summary: Delete a user with their ID
+            description: Delete user
+            operationId: deleteUser
+            parameters:
+                -   name: id
+                    in: path
+                    description: User ID
+                    required: true
+                    schema:
+                        type: integer
+            responses:
+                '200':
+                    description: Successfully deleted user
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/User'
+                '404':
+                    description: "User not found"
+                    content: 
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Error404UserNotFound'      
+
+    /api/posts:
+        get:
+            tags:
+                -   posts
+            summary: Get all posts
+            description: Get all posts :)
+            operationId: getAllPosts
+            responses:
+                '200':
+                    description: Get all posts
+                    content:
+                        application/json:
+                            schema: 
+                                $ref: '#/components/schemas/AllPosts'
+        post:
+            tags:
+                -   posts
+            summary: Create a new post
+            description: Create post
+            operationId: createPost
+            requestBody:
+                content:
+                    application/json:
+                        schema: 
+                            $ref: '#/components/schemas/CreatePost'
+            response:
+                '201':
+                    description: Successfully created a new post
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/Post'
+    /api/posts/{id}:
+        get:
+            tags:
+                -   posts
+            summary: Get specific post
+            description: Get a post by id
+            operationId: Get specific post
+            parameters:
+                -   name: id
+                    in: path
+                    description: Id of post
+                    required: true
+                    schema: 
+                        type: integer
+            responses:
+                '200':  
+                    description: Get specific post
+                    content: 
+                        application/json:
+                            schema:
+                                $ref:
+                                    '#/components/schemas/Post'
+
+                
+components:
+    schemas:
+        CreateUser:
+            type: object
+            required: [id, email, password, displayName]
+            properties:
+                id:
+                    type: integer
+                    example: 0
+                email:
+                    type: string
+                    example: "bob@bagel.email.com"
+                password:
+                    type: string
+                    example: "password123!"
+                displayName:
+                    type: string
+                    example: "danghitBobby"
+                iconUrl:
+                    type: string
+                    example: "https://imagehosting.ex/sampleimage"
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                    example: 0
+                email:
+                    type: string
+                    example: "bob@bagel.email.com"
+                password:
+                    type: string
+                    example: "password123!"
+                displayName:
+                    type: string
+                    example: "danghitBoddy"
+                iconUrl:
+                    type: string
+                    example: "https://imagehosting.ex/sampleimage"
+                friends:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/User'
+                posts:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Post'
+                comments:
+                    type: array
+                    items:
+                        $ref: '#/components/schemas/Comment'
+        AllUsers:
+            type: array
+            items:
+                $ref: '#/components/schemas/User'
