@@ -8,6 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 
+
+/*
+ *  TODO: Test all endpoints
+ *  LEFT: Put
+ */
 namespace BlogAPI.Controllers
 {
     [Route("api/[controller]")]
@@ -86,6 +91,7 @@ namespace BlogAPI.Controllers
             return CreatedAtAction(nameof(Post), new { id = post.Id }, dto);
         }
 
+        // TODO: This endpoint is not tested
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPost(int id, Post post)
         {
