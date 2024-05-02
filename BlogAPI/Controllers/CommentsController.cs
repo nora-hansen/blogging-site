@@ -18,25 +18,52 @@ namespace BlogAPI.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComment()
         {
-            return await _context.Comments.ToListAsync();
+            var comments = from c in _context.Comments
+                           select new CommentDTO()
+                           {
+                               Id = c.Id,
+                               Content = c.Content,
+                               UserID = c.UserID,
+                               PostID = c.PostID,
+                           };
+            return Ok(comments);
+
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetComment(int id)
         {
-            var comment = await _context.Comments.FindAsync(id);
+            var comment = await _context.Comments.Select(c =>
+            new Comment()
+            {
+                Id = c.Id,
+                Content = c.Content,
+                UserID = c.UserID,
+                PostID = c.PostID,
+            }).SingleOrDefaultAsync(c => c.Id == id);
 
-            if (comment == null)
+            if(comment == null)
             {
                 return NotFound();
             }
 
-            return comment;
+            return Ok(comment);
         }
 
+        /**
+         *  TODO: Post endpoint. Only userID and postID should be necessary, not the entire User object and post object
+         */
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(Comment comment)
+        public async Task<ActionResult<Comment>> PostComment(Comment comment, int userID, int postID)
         {
+            if (userID == null)
+            {
+                return BadRequest("Comment must be made by user!");
+            }   else if (postID == null)
+            {
+                return BadRequest("Comment must be made on a post!");
+            }
+
             _context.Comments.Add(comment);
             await _context.SaveChangesAsync();
 
