@@ -150,11 +150,11 @@ paths:
             operationId: getAllPosts
             responses:
                 '200':
-                description: Get all posts
-                content:
-                    application/json:
-                        schema: 
-                            $ref: '#/components/schemas/AllPosts'
+                    description: Get all posts
+                    content:
+                        application/json:
+                            schema: 
+                                $ref: '#/components/schemas/AllPosts'
         post:
             tags:
                 -   posts
@@ -195,6 +195,7 @@ paths:
                             schema:
                                 $ref:
                                     '#/components/schemas/Post'
+
                 
 components:
     schemas:

@@ -22,31 +22,68 @@ namespace BlogAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPosts()
+        public async Task<ActionResult<IEnumerable<Post>>> GetPosts(int userID)
         {
-            return await _context.Posts.ToListAsync();
+            var posts = from p in _context.Posts
+                        select new PostDTO()
+                        {
+                            Id = p.Id,
+                            Title = p.Title,
+                            Content = p.Content,
+                            PostDate = p.PostDate,
+                            UserID = p.UserID
+                        };
+            return Ok(posts);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> GetPost(int id)
         {
-            var post = await _context.Posts.FindAsync(id);
-
+            var post = await _context.Posts.Include(p => p.Id).Select(p =>
+                new PostDTO()
+                {
+                    Id = p.Id,
+                    Title = p.Title,
+                    Content = p.Content,
+                    PostDate = p.PostDate,
+                    UserID = p.UserID
+                }).SingleOrDefaultAsync(p => p.Id == id);
             if (post == null)
             {
                 return NotFound();
             }
 
-            return post;
+            return Ok(post);
         }
 
         [HttpPost]
-        public async Task<ActionResult<Post>> PostPost(Post post)
+        //[Produces(typeof(PostDTO))]
+        public async Task<ActionResult<PostDTO>> PostPost(Post post, int userID)
         {
-            _context.Posts.Add(post);
-            await _context.SaveChangesAsync();
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            return CreatedAtAction(nameof(Post), new { id = post.Id }, post);
+            //var postingUser = _context.Users.SingleOrDefault(u => u.Id == userID);
+            //post.User = postingUser;
+
+            _context.Posts.Add(post);
+            await _context.SaveChangesAsync(); 
+
+            var dto = new PostDTO()
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                PostDate = post.PostDate,
+                UserID = post.UserID
+            };
+
+            /*
+             * TODO: Fix this. The posts are in fact posted, but the response is an error
+             */
+            return CreatedAtAction(nameof(Post), new { id = post.Id }, dto);
         }
 
         [HttpPut("{id}")]

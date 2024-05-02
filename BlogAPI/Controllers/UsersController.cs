@@ -22,29 +22,69 @@ namespace BlogAPI.Controllers
 
         // GET: api/users
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+        public async Task<ActionResult<IQueryable<UserDTO>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            var users = from u in _context.Users
+                        select new UserDTO()
+                        {
+                            Id = u.Id,
+                            Email = u.Email,
+                            DisplayName = u.DisplayName,
+                            IconUrl = u.IconUrl
+                        };
+            return Ok(users);
         }
 
         // GET: api/users/1
+        /*
+         * 
+         */
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<User>> GetUser(int id, bool includePosts)
         {
-            var user = await _context.Users.FindAsync(id);
+            User user = null;
+            if (includePosts == true)   // Include the users posts in the response body?
+            {
+                user = await _context.Users.Select(u =>
+                new User()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    DisplayName = u.DisplayName,
+                    IconUrl = u.IconUrl,
+                    Posts = u.Posts,
+                }).SingleOrDefaultAsync(u => u.Id == id);
+            }
+            else
+            {
+                user = await _context.Users.Select(u =>
+                    new User()
+                    {
+                        Id = u.Id,
+                        Email = u.Email,
+                        DisplayName = u.DisplayName,
+                        IconUrl = u.IconUrl,
+                    }
+                ).SingleOrDefaultAsync(u => u.Id == id);
+            }   
 
             if(user == null)
             {
                 return NotFound();
             }
 
-            return user;
+            return Ok(user);
         }
 
         // POST: api/users
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
