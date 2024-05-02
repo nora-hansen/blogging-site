@@ -65,15 +65,17 @@ namespace BlogAPI.Controllers
         //[Produces(typeof(PostDTO))]
         public async Task<ActionResult<PostDTO>> PostPost(Post post, int userID)
         {
-            if(!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            // TODO: What does this do?
+            //if(!ModelState.IsValid)
+            //{
+            //    return BadRequest(ModelState);
+            //}
 
             //var postingUser = _context.Users.SingleOrDefault(u => u.Id == userID);
             //post.User = postingUser;
 
             _context.Posts.Add(post);
+            post.UserID = userID;
             await _context.SaveChangesAsync(); 
 
             var dto = new PostDTO()
@@ -82,7 +84,7 @@ namespace BlogAPI.Controllers
                 Title = post.Title,
                 Content = post.Content,
                 PostDate = post.PostDate,
-                UserID = post.UserID
+                UserID = userID
             };
 
             /*
