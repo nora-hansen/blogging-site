@@ -80,6 +80,7 @@ namespace BlogAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
+            // What does this actually do?
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
