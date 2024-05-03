@@ -1,3 +1,6 @@
+using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.Build.Framework;
+
 namespace BlogAPI.Models
 {
     public class Comment
@@ -6,17 +9,19 @@ namespace BlogAPI.Models
         public string Content { get; set; }
         public DateTime CommentDate { get; set; }
         public int UserID { get; set; }
-        public User CommentingUser { get; set; }
+        [Required]
+        public User? CommentingUser { get; set; }
         public int PostID { get; set; }
-        public Post OriginalPost { get; set; }
+        [Required]
+        public Post? OriginalPost { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
 
         public Comment()
         {
-            CreatedAt = DateTime.Now;
-            UpdatedAt = DateTime.Now;
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

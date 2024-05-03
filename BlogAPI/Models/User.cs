@@ -13,7 +13,7 @@ namespace BlogAPI.Models
         public string DisplayName { get; set; }
         public string? IconUrl { get; set; }
         public ICollection<User>? Friends { get; set; }
-        // //public ICollection<User> Blocks { get; set; }
+        // Maybe in the future // public ICollection<User> Blocks { get; set; }
         public ICollection<Post>? Posts { get; set; }
         public ICollection<Comment>? Comments { get; set; }
     }

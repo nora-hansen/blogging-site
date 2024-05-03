@@ -15,6 +15,9 @@ namespace BlogAPI.Controllers
             _context = context;
         }
 
+        /**
+         * Gets all comments in the database
+         */
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComment()
         {
@@ -30,11 +33,15 @@ namespace BlogAPI.Controllers
 
         }
 
+        /**
+         * Get a single comment
+         * id - The ID of the comment - Required
+         */
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetComment(int id)
         {
             var comment = await _context.Comments.Select(c =>
-            new Comment()
+            new CommentDTO()
             {
                 Id = c.Id,
                 Content = c.Content,
@@ -51,25 +58,48 @@ namespace BlogAPI.Controllers
         }
 
         /**
-         *  TODO: Post endpoint. Only userID and postID should be necessary, not the entire User object and post object
+         *  Create a comment on a post.
+         *  Requestbody:
+         *  {
+         *      content: string // Required
+         *      userID: int // Required
+         *      postID: int // Required
+         *  }
          */
         [HttpPost]
-        public async Task<ActionResult<Comment>> PostComment(Comment comment, int userID, int postID)
+        public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
-            if (userID == null)
+            var commentingUser = _context.Users.SingleOrDefault(u => u.Id == comment.UserID);
+            if (commentingUser == null)
             {
-                return BadRequest("Comment must be made by user!");
-            }   else if (postID == null)
+                return NotFound("Invalid userID!");
+            }
+            var originalPost = _context.Posts.SingleOrDefault(p => p.Id == comment.PostID);
+            if (originalPost == null)
             {
-                return BadRequest("Comment must be made on a post!");
+                return NotFound("Invalid postID!");
             }
 
             _context.Comments.Add(comment);
+            comment.CommentingUser = commentingUser;
+            comment.OriginalPost = originalPost;
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(Comment), new { id = comment.Id }, comment);
+            var dto = new CommentDTO()
+            {
+                Id = comment.Id,
+                Content = comment.Content,
+                CommentDate = comment.CommentDate,
+                UserID = comment.UserID,
+                PostID = comment.PostID
+            };
+
+            return CreatedAtAction(nameof(Comment), new { id = comment.Id }, dto);
         }
 
+        /**
+         * TODO: Not tested. Should only require userID and postID
+         */
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {
@@ -99,6 +129,9 @@ namespace BlogAPI.Controllers
             return NoContent();
         }
 
+        /**
+         * TODO: Not tested
+         */
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
