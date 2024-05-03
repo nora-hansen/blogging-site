@@ -40,7 +40,7 @@ namespace BlogAPI.Controllers
         public async Task<ActionResult<Comment>> GetComment(int id)
         {
             var comment = await _context.Comments.Select(c =>
-            new Comment()
+            new CommentDTO()
             {
                 Id = c.Id,
                 Content = c.Content,

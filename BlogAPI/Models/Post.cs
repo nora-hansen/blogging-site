@@ -3,7 +3,7 @@ using Microsoft.Build.Framework;
 
 namespace BlogAPI.Models
 {
-    enum Visibility
+    public enum Visibility
     {
         Public,
         FriendsOnly,
