@@ -9,6 +9,8 @@ namespace BlogAPI.Models
         public string Content { get; set; }
         public DateTime PostDate { get; set; }
         public int UserID { get; set; }
+        public Visibility Visibility { get; set; } = Visibility.Public;
+        public bool IsDraft { get; set; } = true;
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }

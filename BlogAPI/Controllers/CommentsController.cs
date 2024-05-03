@@ -16,7 +16,7 @@ namespace BlogAPI.Controllers
         }
 
         /**
-         * TODO: Not tested
+         * Gets all comments in the database
          */
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Comment>>> GetComment()
@@ -34,7 +34,8 @@ namespace BlogAPI.Controllers
         }
 
         /**
-         * TODO: Not tested
+         * Get a single comment
+         * id - The ID of the comment - Required
          */
         [HttpGet("{id}")]
         public async Task<ActionResult<Comment>> GetComment(int id)
@@ -57,7 +58,13 @@ namespace BlogAPI.Controllers
         }
 
         /**
-         *  TODO: Post endpoint. Only userID and postID should be necessary, not the entire User object and post object
+         *  Create a comment on a post.
+         *  Requestbody:
+         *  {
+         *      content: string // Required
+         *      userID: int // Required
+         *      postID: int // Required
+         *  }
          */
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)

@@ -26,6 +26,9 @@ namespace BlogAPI.Controllers
             _context = context;
         }
 
+        /**
+         * Get all the posts in the database
+         */
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Post>>> GetPosts(int userID)
         {
@@ -41,6 +44,10 @@ namespace BlogAPI.Controllers
             return Ok(posts);
         }
 
+        /**
+         * Get single post from the database
+         * id - The post ID, int. Required
+         */
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> GetPost(int id)
         {
@@ -51,7 +58,9 @@ namespace BlogAPI.Controllers
                     Title = p.Title,
                     Content = p.Content,
                     PostDate = p.PostDate,
-                    UserID = p.UserID
+                    UserID = p.UserID,
+                    Visibility = p.Visibility,
+                    IsDraft = p.IsDraft
                 }).SingleOrDefaultAsync(p => p.Id == id);
             if (post == null)
             {
@@ -61,9 +70,17 @@ namespace BlogAPI.Controllers
             return Ok(post);
         }
 
+        /**
+         * Create a new post. 
+         * Requestbody:
+         * {
+         *  userID: int // Required
+         *  title: string
+         *  content: string
+         * }
+         */
         [HttpPost]
-        //[Produces(typeof(PostDTO))]
-        public async Task<ActionResult<PostDTO>> PostPost(Post post, int userID)
+        public async Task<ActionResult<PostDTO>> PostPost(Post post)
         {
             // TODO: What does this do?
             if(!ModelState.IsValid)
@@ -71,7 +88,7 @@ namespace BlogAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var postingUser = _context.Users.SingleOrDefault(u => u.Id == userID);
+            var postingUser = _context.Users.SingleOrDefault(u => u.Id == post.UserID);
             if (postingUser == null)
             {
                 return NotFound("Invalid user!");
@@ -81,7 +98,6 @@ namespace BlogAPI.Controllers
             Console.WriteLine("The post" + post);
 
             _context.Posts.Add(post);
-            post.UserID = userID;
             await _context.SaveChangesAsync(); 
 
             var dto = new PostDTO()
@@ -90,7 +106,8 @@ namespace BlogAPI.Controllers
                 Title = post.Title,
                 Content = post.Content,
                 PostDate = post.PostDate,
-                UserID = userID
+                Visibility = post.Visibility,
+                IsDraft = post.IsDraft,
             };
 
             /*

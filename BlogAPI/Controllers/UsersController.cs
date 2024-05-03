@@ -20,7 +20,9 @@ namespace BlogAPI.Controllers
             _context = context;
         }
 
-        // GET: api/users
+        /**
+         * Gets all the users in the database
+         */
         [HttpGet]
         public async Task<ActionResult<IQueryable<UserDTO>>> GetUsers()
         {
@@ -35,9 +37,9 @@ namespace BlogAPI.Controllers
             return Ok(users);
         }
 
-        // GET: api/users/1
         /*
-         * 
+         * Get a single user in the database
+         * id - ID of the user - Required
          */
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id, bool includePosts)
@@ -76,7 +78,15 @@ namespace BlogAPI.Controllers
             return Ok(user);
         }
 
-        // POST: api/users
+        /**
+         * Create a new user
+         * Requestbody:
+         * {
+         *  email: string // Required
+         *  password: string // Required
+         *  displayName: string // Required
+         * }
+         */
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -92,7 +102,9 @@ namespace BlogAPI.Controllers
             return CreatedAtAction(nameof(User), new { id = user.Id }, user);
         }
 
-        // PUT: api/users/1
+        /**
+         * Edit a user. TODO: Not tested
+         */
         [HttpPut("{id}")]
         public async Task<ActionResult> PutUser(User user, int id)
         {
@@ -122,7 +134,9 @@ namespace BlogAPI.Controllers
             return NoContent();
         }
 
-        // DELETE: api/users/1
+        /**
+         * TODO: Not tested
+         */
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
