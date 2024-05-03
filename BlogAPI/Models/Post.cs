@@ -3,6 +3,12 @@ using Microsoft.Build.Framework;
 
 namespace BlogAPI.Models
 {
+    enum Visibility
+    {
+        Public,
+        FriendsOnly,
+        Private
+    }
     public class Post
     {
         public int Id { get; set; }
@@ -13,6 +19,8 @@ namespace BlogAPI.Models
         [Required]
         public User? User { get; set; }
         public ICollection<Comment>? Comments { get; set; }
+        public Visibility Visibility { get; set; } = Visibility.Public;
+        public bool isDraft { get; set; } = true;
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
