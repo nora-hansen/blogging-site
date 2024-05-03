@@ -30,7 +30,7 @@ namespace BlogAPI.Controllers
          * Get all the posts in the database
          */
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Post>>> GetPosts(int userID)
+        public IQueryable<PostDTO> GetPosts(int userID)
         {
             var posts = from p in _context.Posts
                         select new PostDTO()
@@ -41,7 +41,7 @@ namespace BlogAPI.Controllers
                             PostDate = p.PostDate,
                             UserID = p.UserID
                         };
-            return Ok(posts);
+            return posts;
         }
 
         /**
@@ -49,7 +49,7 @@ namespace BlogAPI.Controllers
          * id - The post ID, int. Required
          */
         [HttpGet("{id}")]
-        public async Task<ActionResult<Post>> GetPost(int id)
+        public async Task<ActionResult<Post>> GetPost(int id, bool includeComments)
         {
             var post = await _context.Posts.Include(p => p.Id).Select(p =>
                 new PostDTO()

@@ -22,9 +22,11 @@ namespace BlogAPI.Controllers
 
         /**
          * Gets all the users in the database
+         * TODO: This was previously async. Should there be an await here? 
+         *  There is no await in the MS learn page
          */
         [HttpGet]
-        public async Task<ActionResult<IQueryable<UserDTO>>> GetUsers()
+        public IQueryable<UserDTO> GetUsers()
         {
             var users = from u in _context.Users
                         select new UserDTO()
@@ -34,7 +36,7 @@ namespace BlogAPI.Controllers
                             DisplayName = u.DisplayName,
                             IconUrl = u.IconUrl
                         };
-            return Ok(users);
+            return users;
         }
 
         /*
@@ -44,7 +46,7 @@ namespace BlogAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id, bool includePosts)
         {
-            User user = null;
+            User? user;
             if (includePosts == true)   // Include the users posts in the response body?
             {
                 user = await _context.Users.Select(u =>

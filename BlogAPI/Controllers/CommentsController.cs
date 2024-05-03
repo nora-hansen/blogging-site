@@ -19,7 +19,7 @@ namespace BlogAPI.Controllers
          * Gets all comments in the database
          */
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Comment>>> GetComment()
+        public IQueryable<CommentDTO> GetComment()
         {
             var comments = from c in _context.Comments
                            select new CommentDTO()
@@ -29,7 +29,7 @@ namespace BlogAPI.Controllers
                                UserID = c.UserID,
                                PostID = c.PostID,
                            };
-            return Ok(comments);
+            return comments;
 
         }
 
