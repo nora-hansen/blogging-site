@@ -66,13 +66,19 @@ namespace BlogAPI.Controllers
         public async Task<ActionResult<PostDTO>> PostPost(Post post, int userID)
         {
             // TODO: What does this do?
-            //if(!ModelState.IsValid)
-            //{
-            //    return BadRequest(ModelState);
-            //}
+            if(!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
 
-            //var postingUser = _context.Users.SingleOrDefault(u => u.Id == userID);
-            //post.User = postingUser;
+            var postingUser = _context.Users.SingleOrDefault(u => u.Id == userID);
+            if (postingUser == null)
+            {
+                return NotFound("Invalid user!");
+            }
+            
+            post.User = postingUser;
+            Console.WriteLine("The post" + post);
 
             _context.Posts.Add(post);
             post.UserID = userID;
