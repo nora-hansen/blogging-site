@@ -51,7 +51,7 @@ namespace BlogAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Post>> GetPost(int id, bool includeComments)
         {
-            var post = await _context.Posts.Include(p => p.Id).Select(p =>
+            var post = await _context.Posts.Select(p =>
                 new PostDTO()
                 {
                     Id = p.Id,
@@ -95,7 +95,6 @@ namespace BlogAPI.Controllers
             }
             
             post.User = postingUser;
-            Console.WriteLine("The post" + post);
 
             _context.Posts.Add(post);
             await _context.SaveChangesAsync(); 
@@ -120,12 +119,23 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPost(int id, Post post)
         {
-            if (id != post.Id)
+            var originalPost = await _context.Posts.
+                Where(p => p.Id ==  id)
+                .SingleOrDefaultAsync();
+
+            if (originalPost == null) 
             {
-                return BadRequest();
+                return NotFound("The post to be updated was not found :(");
             }
 
-            _context.Entry(post).State = EntityState.Modified;
+            Console.WriteLine(originalPost.Title);
+
+            if (post.Title != "" && post.Title != null) originalPost.Title = post.Title;
+            if (post.Content != "" && post.Content != null) originalPost.Content = post.Content;
+            originalPost.Visibility = post.Visibility;
+            if(originalPost.IsDraft && post.IsDraft != originalPost.IsDraft) originalPost.IsDraft = post.IsDraft;
+
+            _context.Entry(originalPost).State = EntityState.Modified;
 
             try
             {
