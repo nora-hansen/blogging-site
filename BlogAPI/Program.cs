@@ -23,15 +23,6 @@ namespace BlogAPI
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<BlogContext>();
 
-            //protected override void OnModelCreating(ModelBuilder modelBuilder)
-            //{
-            //modelBuilder.Entity<User>()
-            //    .HasOne(u => u.Profile)
-            //    .WithOne(o => o.User)
-            //    .HasForeignKey<Profile>(p => p.Id)
-            //    .HasPrincipalKey<User>(u => u.Id);
-            //}
-
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

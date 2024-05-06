@@ -32,11 +32,17 @@ classDiagram
 	Profile : +string? fontColor
 	Profile : +string? postColor
 	Profile : -ResetProfile()
+	
+	FriendRequest : +int Id
+	FriendRequest : +int senderId
+	FriendRequest : +int recipientId
 
 	Post ..> User : 1..1
 	Comment ..> User : 1..1
 	Post ..> Comment : 0..*
 	User .. User : 0..*
 	User .. User : 0..*
-	
+	User <.. FriendRequest : 0..*
+	User ..>FriendRequest : 0..*
+	User <-- Profile : 1..1
 ```
