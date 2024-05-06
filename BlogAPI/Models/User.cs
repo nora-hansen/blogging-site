@@ -16,6 +16,12 @@ namespace BlogAPI.Models
         // Maybe in the future // public ICollection<User> Blocks { get; set; }
         public ICollection<Post>? Posts { get; set; }
         public ICollection<Comment>? Comments { get; set; }
-        public Profile Profile { get; set; }
+        public int ProfileId { get; set; }
+        public Profile? Profile { get; set; }
+
+        public User()
+        {
+
+        }
     }
 }

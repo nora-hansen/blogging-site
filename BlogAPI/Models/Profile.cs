@@ -6,11 +6,9 @@ namespace BlogAPI.Models
 	public class Profile
 	{
 		public int Id { get; set; }
-		public int userID { get; set; }
-		public User Usr { get; set; }
-		public string? bgColor { get; set; }
-		public string? fontColor { get; set; }
-		public string? postColor { get; set; }
+		public string? bgColor { get; set; } = null;
+		public string? fontColor { get; set; } = null;
+		public string? postColor { get; set; } = null;
 		public DateTime CreatedAt { get; set; }
 		public DateTime LastUpdated { get; set; }
 

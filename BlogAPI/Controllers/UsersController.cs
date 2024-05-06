@@ -82,10 +82,14 @@ namespace BlogAPI.Controllers
                 return BadRequest(ModelState);
             }
 
+            var profileSettings = new Profile();
+            user.Profile = profileSettings;
+            user.ProfileId = profileSettings.Id;
+
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(User), new { id = user.Id }, user);
+            return CreatedAtAction(nameof(PostUser), new { id = user.Id }, user);
         }
 
         /**
