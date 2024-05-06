@@ -104,7 +104,8 @@ namespace BlogAPI.Controllers
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {
             var originalComment = await _context.Comments.
-                Where(c => c.Id ==  id);
+                Where(c => c.Id ==  id)
+                .SingleOrDefaultAsync();
 
             if(originalComment == null)
             {
