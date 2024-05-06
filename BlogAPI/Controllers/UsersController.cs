@@ -46,10 +46,7 @@ namespace BlogAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<User>> GetUser(int id, bool includePosts)
         {
-            User? user;
-            if (includePosts == true)   // Include the users posts in the response body?
-            {
-                user = await _context.Users.Select(u =>
+            var user = await _context.Users.Select(u =>
                 new User()
                 {
                     Id = u.Id,
@@ -58,19 +55,6 @@ namespace BlogAPI.Controllers
                     IconUrl = u.IconUrl,
                     Posts = u.Posts,
                 }).SingleOrDefaultAsync(u => u.Id == id);
-            }
-            else
-            {
-                user = await _context.Users.Select(u =>
-                    new User()
-                    {
-                        Id = u.Id,
-                        Email = u.Email,
-                        DisplayName = u.DisplayName,
-                        IconUrl = u.IconUrl,
-                    }
-                ).SingleOrDefaultAsync(u => u.Id == id);
-            }   
 
             if(user == null)
             {
@@ -114,6 +98,8 @@ namespace BlogAPI.Controllers
             {
                 return BadRequest();
             }
+
+            User originalUser = _context.Users.FirstOrDefault(u => u.Id == id);
 
             _context.Entry(user).State = EntityState.Modified;
 

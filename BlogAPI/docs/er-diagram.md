@@ -26,6 +26,12 @@ classDiagram
 	Comment : +string content
 	Comment : +int UserID
 	Comment : +int PostID
+	
+	Profile : +int userID
+	Profile : +string? bgColor
+	Profile : +string? fontColor
+	Profile : +string? postColor
+	Profile : -ResetProfile()
 
 	Post ..> User : 1..1
 	Comment ..> User : 1..1
