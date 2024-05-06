@@ -112,7 +112,7 @@ namespace BlogAPI.Controllers
             /*
              * TODO: Fix this. The posts are in fact posted, but the response is an error
              */
-            return CreatedAtAction(nameof(Post), new { id = post.Id }, dto);
+            return CreatedAtAction(nameof(PostPost), new { id = post.Id }, dto);
         }
 
         // TODO: This endpoint is not tested
@@ -127,8 +127,6 @@ namespace BlogAPI.Controllers
             {
                 return NotFound("The post to be updated was not found :(");
             }
-
-            Console.WriteLine(originalPost.Title);
 
             if (post.Title != "" && post.Title != null) originalPost.Title = post.Title;
             if (post.Content != "" && post.Content != null) originalPost.Content = post.Content;

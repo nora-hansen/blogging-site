@@ -94,7 +94,7 @@ namespace BlogAPI.Controllers
                 PostID = comment.PostID
             };
 
-            return CreatedAtAction(nameof(Comment), new { id = comment.Id }, dto);
+            return CreatedAtAction(nameof(PostComment), new { id = comment.Id }, dto);
         }
 
         /**

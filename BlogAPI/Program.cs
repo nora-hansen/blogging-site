@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace BlogAPI
 {
@@ -21,6 +22,15 @@ namespace BlogAPI
             });
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<BlogContext>();
+
+            //protected override void OnModelCreating(ModelBuilder modelBuilder)
+            //{
+            //modelBuilder.Entity<User>()
+            //    .HasOne(u => u.Profile)
+            //    .WithOne(o => o.User)
+            //    .HasForeignKey<Profile>(p => p.Id)
+            //    .HasPrincipalKey<User>(u => u.Id);
+            //}
 
             var app = builder.Build();
 

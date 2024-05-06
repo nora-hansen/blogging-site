@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BlogAPI.Migrations
 {
     [DbContext(typeof(BlogContext))]
-    [Migration("20240503123939_NameOfNewScript")]
-    partial class NameOfNewScript
+    [Migration("20240506122621_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -75,6 +75,9 @@ namespace BlogAPI.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<bool>("IsDraft")
+                        .HasColumnType("boolean");
+
                     b.Property<DateTime>("PostDate")
                         .HasColumnType("timestamp with time zone");
 
@@ -90,14 +93,39 @@ namespace BlogAPI.Migrations
                     b.Property<int>("Visibility")
                         .HasColumnType("integer");
 
-                    b.Property<bool>("isDraft")
-                        .HasColumnType("boolean");
-
                     b.HasKey("Id");
 
                     b.HasIndex("UserID");
 
                     b.ToTable("Posts");
+                });
+
+            modelBuilder.Entity("BlogAPI.Models.Profile", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("bgColor")
+                        .HasColumnType("text");
+
+                    b.Property<string>("fontColor")
+                        .HasColumnType("text");
+
+                    b.Property<string>("postColor")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Profile");
                 });
 
             modelBuilder.Entity("BlogAPI.Models.User", b =>
@@ -123,7 +151,12 @@ namespace BlogAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<int>("ProfileId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Users");
                 });
@@ -171,6 +204,17 @@ namespace BlogAPI.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("BlogAPI.Models.User", b =>
+                {
+                    b.HasOne("BlogAPI.Models.Profile", "Profile")
+                        .WithMany()
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Profile");
                 });
 
             modelBuilder.Entity("UserUser", b =>
