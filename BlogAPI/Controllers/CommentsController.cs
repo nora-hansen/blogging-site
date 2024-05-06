@@ -103,12 +103,17 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {
-            if (id != comment.Id)
+            var originalComment = await _context.Comments.
+                Where(c => c.Id ==  id);
+
+            if(originalComment == null)
             {
-                return BadRequest();
+                return NotFound("The comment to be updated was not found :(");
             }
 
-            _context.Entry(comment).State = EntityState.Modified;
+            if (comment.Content != "" || comment.Content != null) originalComment.Content = comment.Content;
+
+            _context.Entry(originalComment).State = EntityState.Modified;
 
             try
             {

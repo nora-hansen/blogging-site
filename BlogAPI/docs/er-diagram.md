@@ -38,4 +38,5 @@ classDiagram
 	Post ..> Comment : 0..*
 	User .. User : 0..*
 	User .. User : 0..*
+	
 ```

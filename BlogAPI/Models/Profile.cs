@@ -7,6 +7,7 @@ namespace BlogAPI.Models
 	{
 		public int Id { get; set; }
 		public int userID { get; set; }
+		public User Usr { get; set; }
 		public string? bgColor { get; set; }
 		public string? fontColor { get; set; }
 		public string? postColor { get; set; }
@@ -15,8 +16,8 @@ namespace BlogAPI.Models
 
 		public Profile()
 		{
-			CreatedAt = DateTime.UtcNow();
-			LastUpdated = DateTime.UtcNow();
+			CreatedAt = DateTime.UtcNow;
+			LastUpdated = DateTime.UtcNow;
 		}
 	}
 }

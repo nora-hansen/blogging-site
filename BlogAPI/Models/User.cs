@@ -1,4 +1,4 @@
-using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Microsoft.Build.Framework.Profiler;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json.Serialization;
 
@@ -16,5 +16,6 @@ namespace BlogAPI.Models
         // Maybe in the future // public ICollection<User> Blocks { get; set; }
         public ICollection<Post>? Posts { get; set; }
         public ICollection<Comment>? Comments { get; set; }
+        public Profile Profile { get; set; }
     }
 }
