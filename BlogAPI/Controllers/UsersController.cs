@@ -82,6 +82,17 @@ namespace BlogAPI.Controllers
                 return BadRequest(ModelState);
             }
 
+            var existingEmail = from u in _context.Users
+                                where u.Email == user.Email
+                                select new User();
+
+            Console.WriteLine(existingEmail);
+
+            if (existingEmail.Any()) 
+            {
+                return BadRequest("A user with this email already exists!");
+            }
+
             var profileSettings = new Profile();
             user.Profile = profileSettings;
             user.ProfileId = profileSettings.Id;
