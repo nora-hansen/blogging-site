@@ -89,7 +89,15 @@ namespace BlogAPI.Controllers
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(PostUser), new { id = user.Id }, user);
+            var dto = new UserDTO()
+            {
+                Id = user.Id,
+                Email = user.Email,
+                DisplayName = user.DisplayName,
+                IconUrl = user.IconUrl,
+            };
+
+            return CreatedAtAction(nameof(PostUser), new { id = user.Id }, dto);
         }
 
         /**
