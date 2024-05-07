@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
+using Microsoft.EntityFrameworkCore.Query;
 
 namespace BlogAPI.Controllers
 {
@@ -19,18 +20,33 @@ namespace BlogAPI.Controllers
          * Gets all comments in the database
          */
         [HttpGet]
-        public IQueryable<CommentDTO> GetComment()
+        public IQueryable<CommentDTO> GetComments(int post)
         {
-            var comments = from c in _context.Comments
-                           select new CommentDTO()
-                           {
-                               Id = c.Id,
-                               Content = c.Content,
-                               UserID = c.UserID,
-                               PostID = c.PostID,
-                           };
-            return comments;
-
+            if (post == null || post == 0)
+            {
+                var comments = from c in _context.Comments
+                               select new CommentDTO()
+                               {
+                                   Id = c.Id,
+                                   Content = c.Content,
+                                   UserID = c.UserID,
+                                   PostID = c.PostID,
+                               };
+                return comments;
+            }
+            else
+            {
+                var comments = from c in _context.Comments
+                               where c.PostID == post
+                               select new CommentDTO()
+                               {
+                                   Id = c.Id,
+                                   Content = c.Content,
+                                   UserID = c.UserID,
+                                   PostID = c.PostID,
+                               };
+                return comments;
+            }
         }
 
         /**
