@@ -35,6 +35,11 @@ namespace BlogAPI
                 });
             }
 
+            app.UseCors(x => x
+                .AllowAnyMethod()
+                .AllowAnyHeader()
+                .SetIsOriginAllowed(origin => true));    // allow any origin
+
             app.UseHttpsRedirection();
 
             app.MapControllers();
