@@ -117,14 +117,20 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> PutUser(User user, int id)
         {
-            if (id != user.Id)
-            {
-                return BadRequest();
-            }
+            //if (id != user.Id)
+            //{
+            //    return BadRequest();
+            //}
 
             User originalUser = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (originalUser == null)
+                return NotFound();
 
-            _context.Entry(user).State = EntityState.Modified;
+            if (user.DisplayName != originalUser.DisplayName) originalUser.DisplayName = user.DisplayName;
+            if (user.Email != originalUser.Email) originalUser.Email = user.Email;
+            if (user.IconUrl != originalUser.IconUrl) originalUser.IconUrl = user.IconUrl;
+
+            _context.Entry(originalUser).State = EntityState.Modified;
 
             try
             {
