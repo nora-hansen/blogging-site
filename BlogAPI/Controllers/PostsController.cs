@@ -32,16 +32,34 @@ namespace BlogAPI.Controllers
         [HttpGet]
         public IQueryable<PostDTO> GetPosts(int userID)
         {
-            var posts = from p in _context.Posts
-                        select new PostDTO()
-                        {
-                            Id = p.Id,
-                            Title = p.Title,
-                            Content = p.Content,
-                            PostDate = p.PostDate,
-                            UserID = p.UserID
-                        };
-            return posts;
+            if(userID == 0 || userID == null)
+            {
+                var posts = from p in _context.Posts
+                            select new PostDTO()
+                            {
+                                Id = p.Id,
+                                Title = p.Title,
+                                Content = p.Content,
+                                PostDate = p.PostDate,
+                                UserID = p.UserID
+                            };
+                return posts;
+            }
+            else
+            {
+                var posts = from p in _context.Posts
+                            where p.UserID == userID
+                            select new PostDTO()
+                            {
+                                Id = p.Id,
+                                Title = p.Title,
+                                Content = p.Content,
+                                PostDate = p.PostDate,
+                                UserID = p.UserID
+                            };
+                return posts;
+            }
+
         }
 
         /**
