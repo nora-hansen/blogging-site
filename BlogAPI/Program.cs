@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 using Microsoft.OpenApi.Models;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace BlogAPI
 {
@@ -23,6 +26,22 @@ namespace BlogAPI
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<BlogContext>();
 
+            builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+                        ValidAudience = builder.Configuration["Jwt:Issuer"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+                    };
+                });
+            //builder.Services.AddMvc();
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -39,6 +58,9 @@ namespace BlogAPI
                 .AllowAnyMethod()
                 .AllowAnyHeader()
                 .SetIsOriginAllowed(origin => true));    // allow any origin
+
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseHttpsRedirection();
 

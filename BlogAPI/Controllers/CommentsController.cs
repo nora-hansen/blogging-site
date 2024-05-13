@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BlogAPI.Controllers
 {
@@ -82,9 +84,18 @@ namespace BlogAPI.Controllers
          *      postID: int // Required
          *  }
          */
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
+            var currentUser = HttpContext.User;
+
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return Unauthorized();
+            }
+
             var commentingUser = _context.Users.SingleOrDefault(u => u.Id == comment.UserID);
             if (commentingUser == null)
             {
@@ -116,9 +127,18 @@ namespace BlogAPI.Controllers
         /**
          * TODO: Not tested. Should only require userID and postID
          */
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {
+            var currentUser = HttpContext.User;
+
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return Unauthorized();
+            }
+
             var originalComment = await _context.Comments.
                 Where(c => c.Id ==  id)
                 .SingleOrDefaultAsync();
@@ -154,9 +174,18 @@ namespace BlogAPI.Controllers
         /**
          * TODO: Not tested
          */
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
+            var currentUser = HttpContext.User;
+
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return Unauthorized();
+            }
+
             var comment = await _context.Comments.FindAsync(id);
             if (comment == null)
             {

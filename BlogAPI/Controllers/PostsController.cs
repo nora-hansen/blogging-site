@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 /*
@@ -32,7 +34,7 @@ namespace BlogAPI.Controllers
         [HttpGet]
         public IQueryable<PostDTO> GetPosts(int userID)
         {
-            if(userID == 0 || userID == null)
+            if (userID == 0 || userID == null)
             {
                 var posts = from p in _context.Posts
                             select new PostDTO()
@@ -97,25 +99,28 @@ namespace BlogAPI.Controllers
          *  content: string
          * }
          */
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<PostDTO>> PostPost(Post post)
         {
+            var currentUser = HttpContext.User;
+
             // TODO: What does this do?
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var postingUser = _context.Users.SingleOrDefault(u => u.Id == post.UserID);
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
             if (postingUser == null)
             {
-                return NotFound("Invalid user!");
+                return Unauthorized();
             }
-            
+
             post.User = postingUser;
 
             _context.Posts.Add(post);
-            await _context.SaveChangesAsync(); 
+            await _context.SaveChangesAsync();
 
             var dto = new PostDTO()
             {
@@ -134,14 +139,23 @@ namespace BlogAPI.Controllers
         }
 
         // TODO: This endpoint is not tested
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPost(int id, Post post)
         {
+            var currentUser = HttpContext.User;
+
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return Unauthorized();
+            }
+
             var originalPost = await _context.Posts.
-                Where(p => p.Id ==  id)
+                Where(p => p.Id == id)
                 .SingleOrDefaultAsync();
 
-            if (originalPost == null) 
+            if (originalPost == null)
             {
                 return NotFound("The post to be updated was not found :(");
             }
@@ -149,7 +163,7 @@ namespace BlogAPI.Controllers
             if (post.Title != "" && post.Title != null) originalPost.Title = post.Title;
             if (post.Content != "" && post.Content != null) originalPost.Content = post.Content;
             originalPost.Visibility = post.Visibility;
-            if(originalPost.IsDraft && post.IsDraft != originalPost.IsDraft) originalPost.IsDraft = post.IsDraft;
+            if (originalPost.IsDraft && post.IsDraft != originalPost.IsDraft) originalPost.IsDraft = post.IsDraft;
 
             _context.Entry(originalPost).State = EntityState.Modified;
 
@@ -171,9 +185,18 @@ namespace BlogAPI.Controllers
             return NoContent();
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(int id)
         {
+            var currentUser = HttpContext.User;
+
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return Unauthorized();
+            }
+
             var post = await _context.Posts.FindAsync(id);
             if (post == null)
             {
