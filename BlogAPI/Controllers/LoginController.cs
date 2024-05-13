@@ -37,6 +37,8 @@ namespace BlogAPI.Controller
                 response = Ok(new { token = tokenString });
             }
 
+            Console.WriteLine("Complain");
+
             return response;
         }
 
@@ -56,12 +58,12 @@ namespace BlogAPI.Controller
 
         private string GenerateJSONWebToken(UserLoginDTO userInfo)
         {
-            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
+                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email!),
             };
 
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
@@ -73,9 +75,9 @@ namespace BlogAPI.Controller
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private UserLoginDTO AuthenticateUser(UserLoginDTO login)
+        private UserLoginDTO? AuthenticateUser(UserLoginDTO login)
         {
-            UserLoginDTO user = null;
+            UserLoginDTO? user = null;
             var userSigningIn = _context.Users.Select(u =>
                 new User()
                 {
@@ -83,7 +85,6 @@ namespace BlogAPI.Controller
                     Email = u.Email,
                     Password = u.Password
                 }).SingleOrDefault(u => u.Email == login.Email && u.Password == login.Password);
-
             if (userSigningIn != null)
             {
                 user = new UserLoginDTO { Email = userSigningIn.Email };

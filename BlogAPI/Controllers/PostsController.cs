@@ -34,7 +34,7 @@ namespace BlogAPI.Controllers
         [HttpGet]
         public IQueryable<PostDTO> GetPosts(int userID)
         {
-            if (userID == 0 || userID == null)
+            if (userID == 0)
             {
                 var posts = from p in _context.Posts
                             select new PostDTO()

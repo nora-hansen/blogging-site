@@ -125,7 +125,7 @@ namespace BlogAPI.Controllers
             //    return BadRequest();
             //}
 
-            User originalUser = _context.Users.FirstOrDefault(u => u.Id == id);
+            User? originalUser = _context.Users.FirstOrDefault(u => u.Id == id);
             if (originalUser == null)
                 return NotFound();
 
