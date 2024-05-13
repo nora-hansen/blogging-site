@@ -16,10 +16,12 @@ namespace BlogAPI.Controller
     public class LoginController : ControllerBase
     {
         private IConfiguration _config;
+        private readonly BlogContext _context;
 
-        public LoginController(IConfiguration config)
+        public LoginController(IConfiguration config, BlogContext context)
         {
             _config = config;
+            _context = context;
         }
 
         [AllowAnonymous] // Alows unauthenticated users to use this endpoint
@@ -74,10 +76,17 @@ namespace BlogAPI.Controller
         private UserLoginDTO AuthenticateUser(UserLoginDTO login)
         {
             UserLoginDTO user = null;
+            var userSigningIn = _context.Users.Select(u =>
+                new User()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    Password = u.Password
+                }).SingleOrDefault(u => u.Email == login.Email && u.Password == login.Password);
 
-            if (login.Email == "hamtaro@hamham.club")
+            if (userSigningIn != null)
             {
-                user = new UserLoginDTO { Email = "hamtaro@hamham.club" };
+                user = new UserLoginDTO { Email = userSigningIn.Email };
             }
 
             return user;

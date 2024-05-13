@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 using Microsoft.EntityFrameworkCore.Query;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace BlogAPI.Controllers
 {
@@ -87,10 +88,12 @@ namespace BlogAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
+            var currentUser = HttpContext.User;
+
             var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
             if (postingUser == null)
             {
-                return NotFound("Invalid user!");
+                return Unauthorized();
             }
 
             var commentingUser = _context.Users.SingleOrDefault(u => u.Id == comment.UserID);
@@ -128,10 +131,12 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {
+            var currentUser = HttpContext.User;
+
             var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
             if (postingUser == null)
             {
-                return NotFound("Invalid user!");
+                return Unauthorized();
             }
 
             var originalComment = await _context.Comments.
@@ -173,10 +178,12 @@ namespace BlogAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
+            var currentUser = HttpContext.User;
+
             var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
             if (postingUser == null)
             {
-                return NotFound("Invalid user!");
+                return Unauthorized();
             }
 
             var comment = await _context.Comments.FindAsync(id);

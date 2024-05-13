@@ -143,10 +143,12 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPost(int id, Post post)
         {
+            var currentUser = HttpContext.User;
+
             var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
             if (postingUser == null)
             {
-                return NotFound("Invalid user!");
+                return Unauthorized();
             }
 
             var originalPost = await _context.Posts.
@@ -187,10 +189,12 @@ namespace BlogAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(int id)
         {
+            var currentUser = HttpContext.User;
+
             var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
             if (postingUser == null)
             {
-                return NotFound("Invalid user!");
+                return Unauthorized();
             }
 
             var post = await _context.Posts.FindAsync(id);
