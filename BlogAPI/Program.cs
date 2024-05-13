@@ -60,6 +60,7 @@ namespace BlogAPI
                 .SetIsOriginAllowed(origin => true));    // allow any origin
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseHttpsRedirection();
 

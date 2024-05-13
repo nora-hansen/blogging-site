@@ -38,6 +38,13 @@ namespace BlogAPI.Controller
             return response;
         }
 
+        [HttpGet]
+        [Authorize]
+        public ActionResult<IEnumerable<string>> Get()
+        {
+            return new string[] { "value1", "value2", "value3", "value4", "value5" };
+        }
+
         private string GenerateJSONWebToken(UserLoginDTO userInfo)
         {
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
