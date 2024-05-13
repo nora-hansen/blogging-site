@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 using Microsoft.EntityFrameworkCore.Query;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogAPI.Controllers
 {
@@ -82,6 +83,7 @@ namespace BlogAPI.Controllers
          *      postID: int // Required
          *  }
          */
+        [Authorize]
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
@@ -116,6 +118,7 @@ namespace BlogAPI.Controllers
         /**
          * TODO: Not tested. Should only require userID and postID
          */
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {
@@ -154,6 +157,7 @@ namespace BlogAPI.Controllers
         /**
          * TODO: Not tested
          */
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {

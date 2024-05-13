@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace BlogAPI.Controllers
 {
@@ -73,6 +74,7 @@ namespace BlogAPI.Controllers
          *  displayName: string // Required
          * }
          */
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<User>> PostUser(User user)
         {
@@ -114,6 +116,7 @@ namespace BlogAPI.Controllers
         /**
          * Edit a user. TODO: Not tested
          */
+        [Authorize]
         [HttpPut("{id}")]
         public async Task<ActionResult> PutUser(User user, int id)
         {
@@ -154,6 +157,7 @@ namespace BlogAPI.Controllers
         /**
          * TODO: Not tested
          */
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteUser(int id)
         {
