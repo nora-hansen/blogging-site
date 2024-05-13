@@ -24,7 +24,7 @@ namespace BlogAPI.Controllers
         [HttpGet]
         public IQueryable<CommentDTO> GetComments(int post)
         {
-            if (post == null || post == 0)
+            if (post == 0)
             {
                 var comments = from c in _context.Comments
                                select new CommentDTO()
