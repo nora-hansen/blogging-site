@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 
 /*
@@ -102,13 +103,15 @@ namespace BlogAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<PostDTO>> PostPost(Post post)
         {
+            var currentUser = HttpContext.User;
+
             // TODO: What does this do?
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            var postingUser = _context.Users.SingleOrDefault(u => u.Id == post.UserID);
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
             if (postingUser == null)
             {
                 return NotFound("Invalid user!");

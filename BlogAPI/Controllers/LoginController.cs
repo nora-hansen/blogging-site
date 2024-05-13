@@ -42,7 +42,14 @@ namespace BlogAPI.Controller
         [Authorize]
         public ActionResult<IEnumerable<string>> Get()
         {
+            var currentUser = HttpContext.User;
+            foreach (Claim claim in currentUser.Claims)
+            {
+                Console.WriteLine("CLAIM TYPE: " + claim.Type + "; CLAIM VALUE: " + claim.Value + "</br>");
+            }
+            
             return new string[] { "value1", "value2", "value3", "value4", "value5" };
+
         }
 
         private string GenerateJSONWebToken(UserLoginDTO userInfo)
@@ -50,9 +57,14 @@ namespace BlogAPI.Controller
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
             var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Email, userInfo.Email),
+            };
+
             var token = new JwtSecurityToken(_config["Jwt:Issuer"],
               _config["Jwt:Issuer"],
-              null,
+              claims,
               expires: DateTime.Now.AddMinutes(120),
               signingCredentials: credentials);
 
