@@ -87,6 +87,12 @@ namespace BlogAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<Comment>> PostComment(Comment comment)
         {
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return NotFound("Invalid user!");
+            }
+
             var commentingUser = _context.Users.SingleOrDefault(u => u.Id == comment.UserID);
             if (commentingUser == null)
             {
@@ -122,6 +128,12 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutComment(int id, Comment comment)
         {
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return NotFound("Invalid user!");
+            }
+
             var originalComment = await _context.Comments.
                 Where(c => c.Id ==  id)
                 .SingleOrDefaultAsync();
@@ -161,6 +173,12 @@ namespace BlogAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteComment(int id)
         {
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return NotFound("Invalid user!");
+            }
+
             var comment = await _context.Comments.FindAsync(id);
             if (comment == null)
             {

@@ -114,7 +114,7 @@ namespace BlogAPI.Controllers
             var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
             if (postingUser == null)
             {
-                return NotFound("Invalid user!");
+                return Unauthorized();
             }
 
             post.User = postingUser;
@@ -143,6 +143,12 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutPost(int id, Post post)
         {
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return NotFound("Invalid user!");
+            }
+
             var originalPost = await _context.Posts.
                 Where(p => p.Id == id)
                 .SingleOrDefaultAsync();
@@ -181,6 +187,12 @@ namespace BlogAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(int id)
         {
+            var postingUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return NotFound("Invalid user!");
+            }
+
             var post = await _context.Posts.FindAsync(id);
             if (post == null)
             {
