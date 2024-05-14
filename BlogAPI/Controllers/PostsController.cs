@@ -43,7 +43,8 @@ namespace BlogAPI.Controllers
                                 Title = p.Title,
                                 Content = p.Content,
                                 PostDate = p.PostDate,
-                                UserID = p.UserID
+                                UserID = p.UserID,
+                                IsDraft = p.IsDraft,
                             };
                 return posts;
             }
@@ -57,7 +58,8 @@ namespace BlogAPI.Controllers
                                 Title = p.Title,
                                 Content = p.Content,
                                 PostDate = p.PostDate,
-                                UserID = p.UserID
+                                UserID = p.UserID,
+                                IsDraft= p.IsDraft,
                             };
                 return posts;
             }
