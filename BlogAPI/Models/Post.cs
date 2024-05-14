@@ -20,7 +20,7 @@ namespace BlogAPI.Models
         public User? User { get; set; }
         public ICollection<Comment>? Comments { get; set; }
         public Visibility Visibility { get; set; } = Visibility.Public;
-        public bool IsDraft { get; set; } = true;
+        public bool IsDraft { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; }
