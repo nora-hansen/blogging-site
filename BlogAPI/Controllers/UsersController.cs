@@ -27,9 +27,9 @@ namespace BlogAPI.Controllers
          *  There is no await in the MS learn page
          */
         [HttpGet]
-        public IQueryable<UserDTO> GetUsers([FromBody] UserLoginDTO? userLoginInfo)
+        public IQueryable<UserDTO> GetUsers(string? email)
         {
-            if(userLoginInfo is null)
+            if(email is null)
             {   var users = from u in _context.Users
                 select new UserDTO()
                 {
@@ -43,7 +43,7 @@ namespace BlogAPI.Controllers
             else
             {
                 var users = from u in _context.Users
-                            where u.Email == userLoginInfo.Email
+                            where u.Email == email
                             select new UserDTO()
                             {
                                 Id = u.Id,
