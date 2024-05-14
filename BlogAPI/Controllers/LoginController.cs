@@ -37,8 +37,6 @@ namespace BlogAPI.Controller
                 response = Ok(new { token = tokenString });
             }
 
-            Console.WriteLine("Complain");
-
             return response;
         }
 

@@ -27,17 +27,32 @@ namespace BlogAPI.Controllers
          *  There is no await in the MS learn page
          */
         [HttpGet]
-        public IQueryable<UserDTO> GetUsers()
+        public IQueryable<UserDTO> GetUsers([FromBody] UserLoginDTO userLoginInfo)
         {
-            var users = from u in _context.Users
-                        select new UserDTO()
-                        {
-                            Id = u.Id,
-                            Email = u.Email,
-                            DisplayName = u.DisplayName,
-                            IconUrl = u.IconUrl
-                        };
-            return users;
+            if(userLoginInfo.Email == "")
+            {   var users = from u in _context.Users
+                select new UserDTO()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    DisplayName = u.DisplayName,
+                    IconUrl = u.IconUrl
+                };
+                return users;
+            }
+            else
+            {
+                var users = from u in _context.Users
+                            where u.Email == userLoginInfo.Email
+                            select new UserDTO()
+                            {
+                                Id = u.Id,
+                                Email = u.Email,
+                                DisplayName = u.DisplayName,
+                                IconUrl = u.IconUrl
+                            };
+                return users;
+            }
         }
 
         /*
@@ -45,7 +60,7 @@ namespace BlogAPI.Controllers
          * id - ID of the user - Required
          */
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id, bool includePosts)
+        public async Task<ActionResult<User>> GetUser(int id)
         {
             var user = await _context.Users.Select(u =>
                 new User()
