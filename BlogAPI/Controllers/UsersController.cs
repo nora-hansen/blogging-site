@@ -36,7 +36,7 @@ namespace BlogAPI.Controllers
                     Id = u.Id,
                     Email = u.Email,
                     DisplayName = u.DisplayName,
-                    IconUrl = u.IconUrl
+                    IconUrl = u.IconUrl,
                 };
                 return users;
             }
