@@ -32,11 +32,12 @@ namespace BlogAPI.Controllers
          * Get all the posts in the database
          */
         [HttpGet]
-        public IQueryable<PostDTO> GetPosts(int userID)
+        public IQueryable<PostDTO> GetPosts(int? userID, bool? isDraft)
         {
-            if (userID == 0)
+            if (isDraft != null && userID != null)
             {
                 var posts = from p in _context.Posts
+                            where p.UserID == userID && p.IsDraft == true
                             select new PostDTO()
                             {
                                 Id = p.Id,
@@ -44,11 +45,11 @@ namespace BlogAPI.Controllers
                                 Content = p.Content,
                                 PostDate = p.PostDate,
                                 UserID = p.UserID,
-                                IsDraft = p.IsDraft,
+                                IsDraft = p.IsDraft
                             };
                 return posts;
             }
-            else
+            else if (userID != null) 
             {
                 var posts = from p in _context.Posts
                             where p.UserID == userID
@@ -59,7 +60,22 @@ namespace BlogAPI.Controllers
                                 Content = p.Content,
                                 PostDate = p.PostDate,
                                 UserID = p.UserID,
-                                IsDraft= p.IsDraft,
+                                IsDraft = p.IsDraft
+                            };
+                return posts;
+            }
+            else 
+            {
+                var posts = from p in _context.Posts
+                            where p.IsDraft == false
+                            select new PostDTO()
+                            {
+                                Id = p.Id,
+                                Title = p.Title,
+                                Content = p.Content,
+                                PostDate = p.PostDate,
+                                UserID = p.UserID,
+                                IsDraft = p.IsDraft,
                             };
                 return posts;
             }
