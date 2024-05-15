@@ -66,9 +66,9 @@ namespace BlogAPI.Controllers
                 return NotFound("No userprofile found :(");
             }
 
-            if (profileToUpdate.bgColor != profile.bgColor && profile.bgColor != null) profileToUpdate.bgColor = profile.bgColor;
-            if (profileToUpdate.fontColor != profile.fontColor && profile.fontColor != null) profileToUpdate.fontColor = profile.fontColor;  
-            if (profileToUpdate.postColor != profile.postColor && profile.postColor != null) profileToUpdate.postColor = profile.postColor;
+            if (profileToUpdate.bgColor != profile.bgColor && profile.bgColor!= null && profile.bgColor != "") profileToUpdate.bgColor = profile.bgColor;
+            if (profileToUpdate.fontColor != profile.fontColor && profile.fontColor != null && profile.fontColor != "") profileToUpdate.fontColor = profile.fontColor;  
+            if (profileToUpdate.postColor != profile.postColor && profile.postColor != null && profile.postColor != "") profileToUpdate.postColor = profile.postColor;
 
             _context.Entry(profileToUpdate).State = EntityState.Modified;
 
