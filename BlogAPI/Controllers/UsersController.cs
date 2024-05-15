@@ -36,7 +36,8 @@ namespace BlogAPI.Controllers
                     Id = u.Id,
                     Email = u.Email,
                     DisplayName = u.DisplayName,
-                    IconUrl = u.IconUrl
+                    IconUrl = u.IconUrl,
+                    ProfileId = u.ProfileId
                 };
                 return users;
             }
@@ -49,7 +50,8 @@ namespace BlogAPI.Controllers
                                 Id = u.Id,
                                 Email = u.Email,
                                 DisplayName = u.DisplayName,
-                                IconUrl = u.IconUrl
+                                IconUrl = u.IconUrl,
+                                ProfileId = u.ProfileId
                             };
                 return users;
             }
@@ -70,6 +72,8 @@ namespace BlogAPI.Controllers
                     DisplayName = u.DisplayName,
                     IconUrl = u.IconUrl,
                     Posts = u.Posts,
+                    ProfileId = u.ProfileId
+
                 }).SingleOrDefaultAsync(u => u.Id == id);
 
             if(user == null)
