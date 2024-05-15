@@ -40,6 +40,9 @@ namespace BlogAPI.Models
 				.HasMany(e => e.Friends)
 				.WithMany();
 
+			modelBuilder.Entity<User>()
+				.HasOne(e => e.Profile);
+
             modelBuilder.Entity<FriendRequest>()
 				.HasKey(fr => new { fr.SenderId, fr.RecipientId });
         }
@@ -48,5 +51,6 @@ namespace BlogAPI.Models
 		public DbSet<Post> Posts { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<FriendRequest> FriendRequests { get; set; }
+		public DbSet<Profile> Profiles { get; set; }
 	}
 }
