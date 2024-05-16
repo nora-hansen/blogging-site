@@ -137,6 +137,11 @@ namespace BlogAPI.Controllers
 
             post.User = postingUser;
 
+            if(!post.IsDraft)
+            {
+                post.PostDate = DateTime.UtcNow;
+            }
+
             _context.Posts.Add(post);
             await _context.SaveChangesAsync();
 
@@ -181,6 +186,7 @@ namespace BlogAPI.Controllers
             if (post.Title != "" && post.Title != null) originalPost.Title = post.Title;
             if (post.Content != "" && post.Content != null) originalPost.Content = post.Content;
             originalPost.Visibility = post.Visibility;
+            if (originalPost.IsDraft && !post.IsDraft) originalPost.PostDate = DateTime.UtcNow;
             if (originalPost.IsDraft && post.IsDraft != originalPost.IsDraft) originalPost.IsDraft = post.IsDraft;
 
             _context.Entry(originalPost).State = EntityState.Modified;
