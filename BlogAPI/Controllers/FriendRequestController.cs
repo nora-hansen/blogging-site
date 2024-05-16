@@ -55,10 +55,41 @@ namespace BlogAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<FriendRequest>> SendFriendRequest(FriendRequest friendRequest) 
         {
+            var existingFriend = await _context.FriendRequests.Select(fr =>
+                            new FriendRequest()
+                            {
+                                SenderId = fr.SenderId,
+                                RecipientId = fr.RecipientId
+                            }).SingleOrDefaultAsync(fr => fr.RecipientId == friendRequest.RecipientId && fr.SenderId == friendRequest.SenderId);
             _context.FriendRequests.Add(friendRequest);
             await _context.SaveChangesAsync();
 
+            if (existingFriend != null)
+            {
+                return BadRequest();
+            }
+
             return CreatedAtAction(nameof(SendFriendRequest), new { SenderId = friendRequest.SenderId, RecipientId = friendRequest.RecipientId }, friendRequest);
+        }
+
+        [HttpDelete]
+        public async Task<IActionResult> DeleteFriendRequest(int senderId, int recipientId)
+        {
+            var friendRequest = await _context.FriendRequests.Select(fr =>
+                            new FriendRequest()
+                            {
+                                SenderId = fr.SenderId,
+                                RecipientId = fr.RecipientId
+                            }).SingleOrDefaultAsync(fr => fr.RecipientId == recipientId && fr.SenderId == senderId);
+            if (friendRequest == null)
+            {
+                return NotFound();
+            }
+
+            _context.FriendRequests.Remove(friendRequest);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
         }
     }
 }
