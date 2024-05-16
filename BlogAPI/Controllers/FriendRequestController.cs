@@ -22,13 +22,34 @@ namespace BlogAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<FriendRequest>> GetTodoItem(int id)
+        public async Task<ActionResult<FriendRequest>> GetFriendRequests(int id)
         {
             var friendRequests = await _context.FriendRequests
                 .Where(fr => fr.RecipientId == id)
                 .ToListAsync();
 
             return Ok(friendRequests);
+        }
+
+        /**
+         * Get request from specific sender to specific recipient
+         */
+        [HttpGet]
+        public async Task<ActionResult<FriendRequest>> GetSpecificRequestIfExists(int senderId, int recipientId)
+        {
+            var friendRequest = await _context.FriendRequests.Select(fr =>
+                new FriendRequest()
+                {
+                    SenderId = fr.SenderId,
+                    RecipientId = fr.RecipientId
+                }).SingleOrDefaultAsync(fr => fr.RecipientId == recipientId && fr.SenderId == senderId);
+            if (friendRequest == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(friendRequest);
+        
         }
 
         [HttpPost]
