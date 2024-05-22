@@ -14,7 +14,9 @@ namespace BlogAPI.Models
         public string? IconUrl { get; set; }
         public ICollection<User>? Friends { get; set; }
         // Maybe in the future // public ICollection<User> Blocks { get; set; }
+        [JsonIgnore]
         public ICollection<Post>? Posts { get; set; }
+        [JsonIgnore]
         public ICollection<Comment>? Comments { get; set; }
         public int ProfileId { get; set; }
         public Profile? Profile { get; set; }

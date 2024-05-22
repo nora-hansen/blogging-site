@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.Build.Framework;
+using System.Text.Json.Serialization;
 
 namespace BlogAPI.Models
 {
@@ -17,6 +18,7 @@ namespace BlogAPI.Models
         public DateTime PostDate { get; set; }
         public int UserID { get; set; }
         [Required]
+        [JsonIgnore]
         public User? User { get; set; }
         public ICollection<Comment>? Comments { get; set; }
         public Visibility Visibility { get; set; } = Visibility.Public;
@@ -29,6 +31,24 @@ namespace BlogAPI.Models
         {
             CreatedAt = DateTime.UtcNow;
             UpdatedAt = DateTime.UtcNow;
+        }
+
+        public Post Copy()
+        {
+            Post copy = new Post();
+
+            copy.Id = Id;
+            copy.Title = Title;
+            copy.Content = Content;
+            copy.PostDate = PostDate;
+            copy.User = User;
+            copy.Comments = Comments;
+            copy.Visibility = Visibility;
+            copy.IsDraft    = IsDraft;
+            copy.CreatedAt = CreatedAt;
+            copy.UpdatedAt = UpdatedAt;
+
+            return copy;
         }
     }
 }

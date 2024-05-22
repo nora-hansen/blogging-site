@@ -9,6 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using Microsoft.AspNetCore.JsonPatch;
+using Microsoft.AspNetCore.Mvc.NewtonsoftJson;
 
 
 /*
@@ -209,6 +211,50 @@ namespace BlogAPI.Controllers
             return NoContent();
         }
 
+        /**
+         * Update part of post. Mostly for drafts
+         */
+        [Authorize]
+        [HttpPatch("{postId}")]
+        public async Task<IActionResult> PatchPost(int postId, JsonPatchDocument<Post> patch)
+        {
+            var currentUser = HttpContext.User;
+            var postingUser = await _context.Users.SingleOrDefaultAsync(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+            if (postingUser == null)
+            {
+                return Unauthorized();
+            }
+
+            var originalPost = await _context.Posts.SingleOrDefaultAsync(p => p.Id == postId);
+            if(originalPost == null)
+            {
+                return NotFound($"I can't find {postId} post :/");
+            }
+            
+            var postCopy = originalPost.Copy();
+            patch.ApplyTo(originalPost, ModelState);
+
+            var isValid = TryValidateModel(originalPost);
+            if (!isValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            _context.Update(originalPost);
+            _context.SaveChanges();
+
+            var model = new
+            {
+                postCopy,
+                patched = originalPost
+            };
+            
+            return Ok(model);
+        }
+
+        /**
+         * Delete a post
+         */
         [Authorize]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeletePost(int id)
