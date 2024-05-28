@@ -43,11 +43,11 @@ namespace BlogAPI.Models
 			modelBuilder.Entity<User>()
 				.HasOne(e => e.Profile);
 
-            modelBuilder.Entity<FriendRequest>()
+			modelBuilder.Entity<FriendRequest>()
 				.HasKey(fr => new { fr.SenderId, fr.RecipientId });
         }
 
-		public DbSet<User> Users { get; set; }
+        public DbSet<User> Users { get; set; }
 		public DbSet<Post> Posts { get; set; }
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<FriendRequest> FriendRequests { get; set; }
