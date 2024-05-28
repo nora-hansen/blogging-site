@@ -24,9 +24,16 @@ namespace BlogAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<FriendRequest>> GetFriendRequests(int id)
         {
-            var friendRequests = await _context.FriendRequests
-                .Where(fr => fr.RecipientId == id)
-                .ToListAsync();
+            var friendRequests = await (from fr in _context.FriendRequests
+                                        join u in _context.Users on fr.SenderId equals u.Id
+                                        where fr.RecipientId == id
+                                        select new FriendRequestDTO()
+                                        {
+                                            SenderId = fr.SenderId,
+                                            RecipientId = fr.RecipientId,
+                                            SenderName = u.DisplayName,
+                                            SenderIconUrl = u.IconUrl
+                                        }).ToListAsync();
 
             return Ok(friendRequests);
         }
@@ -35,14 +42,30 @@ namespace BlogAPI.Controllers
          * Get request from specific sender to specific recipient
          */
         [HttpGet]
-        public async Task<ActionResult<FriendRequest>> GetSpecificRequestIfExists(int senderId, int recipientId)
+        public async Task<ActionResult<FriendRequestDTO>> GetSpecificRequestIfExists(int senderId, int recipientId)
         {
             var friendRequest = await _context.FriendRequests.Select(fr =>
-                new FriendRequest()
+                new FriendRequestDTO()
                 {
                     SenderId = fr.SenderId,
-                    RecipientId = fr.RecipientId
+                    RecipientId = fr.RecipientId,
+                    SenderName = "",
+                    SenderIconUrl = ""
                 }).SingleOrDefaultAsync(fr => fr.RecipientId == recipientId && fr.SenderId == senderId);
+
+            var friendRequesterDetails = await _context.Users.Select(u =>
+                new UserDTO()
+                {
+                    Id = u.Id,
+                    Email = "",
+                    DisplayName = u.DisplayName,
+                    IconUrl = u.IconUrl,
+                    ProfileId = -1,
+                    Posts = null
+                }).SingleOrDefaultAsync(u => u.Id == senderId);
+
+            friendRequest.SenderName = friendRequesterDetails.DisplayName;
+            friendRequest.SenderIconUrl = friendRequesterDetails.IconUrl;
             if (friendRequest == null)
             {
                 return NotFound();
