@@ -45,7 +45,8 @@ namespace BlogAPI.Controllers
                                 Content = p.Content,
                                 PostDate = p.PostDate,
                                 UserID = p.UserID,
-                                IsDraft = p.IsDraft
+                                IsDraft = p.IsDraft,
+                                Comments = p.Comments
                             };
                 return posts;
             }
@@ -60,7 +61,8 @@ namespace BlogAPI.Controllers
                                 Content = p.Content,
                                 PostDate = p.PostDate,
                                 UserID = p.UserID,
-                                IsDraft = p.IsDraft
+                                IsDraft = p.IsDraft,
+                                Comments = p.Comments
                             };
                 return posts;
             }
@@ -76,10 +78,10 @@ namespace BlogAPI.Controllers
                                 PostDate = p.PostDate,
                                 UserID = p.UserID,
                                 IsDraft = p.IsDraft,
+                                Comments = p.Comments
                             };
                 return posts;
             }
-
         }
 
         /**

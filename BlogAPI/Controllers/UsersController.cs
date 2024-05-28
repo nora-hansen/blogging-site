@@ -62,10 +62,10 @@ namespace BlogAPI.Controllers
          * id - ID of the user - Required
          */
         [HttpGet("{id}")]
-        public async Task<ActionResult<User>> GetUser(int id)
+        public async Task<ActionResult<UserDTO>> GetUser(int id)
         {
             var user = await _context.Users.Select(u =>
-                new User()
+                new UserDTO()
                 {
                     Id = u.Id,
                     Email = u.Email,

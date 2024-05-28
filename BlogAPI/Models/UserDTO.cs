@@ -10,5 +10,6 @@ namespace BlogAPI.Models
         public string DisplayName { get; set; } = string.Empty;
         public string? IconUrl { get; set; }
         public int ProfileId { get; set; }
+        public ICollection<Post>? Posts { get; set; }
     }
 }
