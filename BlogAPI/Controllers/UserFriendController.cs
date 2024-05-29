@@ -79,16 +79,21 @@ namespace BlogAPI.Controllers
         }
 
         [Authorize]
-        [HttpDelete("{id}")]
+        [HttpDelete]
         public async Task<IActionResult> DeleteFriendship(int userId, int friendId)
         {
             var friendship = await _context.UserFriend.FindAsync(userId, friendId);
-            if (friendship == null)
+            if (!FriendshipExists(userId, friendId) && !FriendshipExists(friendId, userId))
             {
                 return NotFound();
             }
 
             _context.UserFriend.Remove(friendship);
+            _context.UserFriend.Remove(new UserFriend()
+            {
+                UserId = friendId,
+                FriendId = userId
+            });
             await _context.SaveChangesAsync();
 
             return NoContent();
