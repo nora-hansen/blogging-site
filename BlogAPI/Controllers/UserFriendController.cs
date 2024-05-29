@@ -28,7 +28,7 @@ namespace BlogAPI.Controllers
         public IQueryable<UserFriend> GetFriendsOfUser(int id)
         {
             var friends = from f in _context.UserFriend
-                          where f.UserId == id 
+                          where f.UserId == id
                           select new UserFriend()
                           {
                               UserId = f.UserId,
@@ -40,6 +40,7 @@ namespace BlogAPI.Controllers
         /**
          * Create a new friendship. A bit messy
          * TODO: Make this better
+         *  Check if the user accepting is the one logged in
          */
         [HttpPost]
         public async Task<ActionResult<UserFriend>> PostFriendship(UserFriend userFriend)
@@ -50,15 +51,7 @@ namespace BlogAPI.Controllers
                 return BadRequest(ModelState);
             }
 
-            var user1 = from u in _context.Users
-                        where u.Id == userFriend.UserId
-                        select new User();
-
-            var user2 = from u in _context.Users
-                        where u.Id == userFriend.FriendId
-                        select new User();
-
-            if (!user1.Any() || !user2.Any())
+            if (!UserExists(userFriend.UserId) || !UserExists(userFriend.FriendId))
             {
                 return BadRequest("Invalid user!");
             }
@@ -67,16 +60,7 @@ namespace BlogAPI.Controllers
                                      where fr.UserId == userFriend.UserId && fr.FriendId == userFriend.FriendId
                                      select new UserFriend();
 
-            if (existingFriendship.Any())
-            {
-                return BadRequest("Already friends!");
-            }
-
-            existingFriendship = from fr in _context.UserFriend
-                                     where fr.FriendId == userFriend.UserId && fr.UserId == userFriend.FriendId
-                                     select new UserFriend();
-
-            if (existingFriendship.Any())
+            if (FriendshipExists(userFriend.UserId, userFriend.FriendId) || FriendshipExists(userFriend.FriendId, userFriend.UserId))
             {
                 return BadRequest("Already friends!");
             }
@@ -91,7 +75,37 @@ namespace BlogAPI.Controllers
 
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(PostFriendship), new { user1 });
+            return CreatedAtAction(nameof(PostFriendship), new { userFriend });
+        }
+
+        [Authorize]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteFriendship(int userId, int friendId)
+        {
+            var friendship = await _context.UserFriend.FindAsync(userId, friendId);
+            if (friendship == null)
+            {
+                return NotFound();
+            }
+
+            _context.UserFriend.Remove(friendship);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+        private bool UserExists(int id)
+        {
+            return _context.Users.Any(e => e.Id == id);
+        }
+
+        private bool FriendshipExists(int userId, int friendId)
+        {
+            var existingFriendship = from fr in _context.UserFriend
+                                 where fr.UserId == userId && fr.FriendId == friendId
+                                 select new UserFriend();
+
+            return existingFriendship.Any();
         }
     }
 }
