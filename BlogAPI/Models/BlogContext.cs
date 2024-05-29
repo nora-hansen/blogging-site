@@ -36,12 +36,15 @@ namespace BlogAPI.Models
 		    	.WithMany(e => e.Comments)
 		    	.HasForeignKey(e => e.UserID);
 
-			modelBuilder.Entity<User>()
-				.HasMany(e => e.Friends)
-				.WithMany();
+            modelBuilder.Entity<User>()
+                .HasOne(e => e.Profile);
 
-			modelBuilder.Entity<User>()
-				.HasOne(e => e.Profile);
+            modelBuilder.Entity<UserFriend>(b =>
+			{
+				b.HasKey(uf => new { uf.UserId, uf.FriendId });
+				b.HasOne(uf => uf.User).WithMany(uf => uf.Friends);
+				b.HasOne(uf => uf.Friend).WithMany().OnDelete(DeleteBehavior.ClientSetNull);
+			});
 
 			modelBuilder.Entity<FriendRequest>()
 				.HasKey(fr => new { fr.SenderId, fr.RecipientId });
@@ -52,5 +55,6 @@ namespace BlogAPI.Models
 		public DbSet<Comment> Comments { get; set; }
 		public DbSet<FriendRequest> FriendRequests { get; set; }
 		public DbSet<Profile> Profiles { get; set; }
+		public DbSet<UserFriend> UserFriend { get; set; }
 	}
 }
