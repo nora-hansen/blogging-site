@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BlogAPI.Migrations
 {
     [DbContext(typeof(BlogContext))]
-    [Migration("20240506132227_AddedFriendRequest")]
-    partial class AddedFriendRequest
+    [Migration("20240529081632_UpdateDesign2")]
+    partial class UpdateDesign2
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,7 +138,7 @@ namespace BlogAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Profile");
+                    b.ToTable("Profiles");
                 });
 
             modelBuilder.Entity("BlogAPI.Models.User", b =>
@@ -174,19 +174,19 @@ namespace BlogAPI.Migrations
                     b.ToTable("Users");
                 });
 
-            modelBuilder.Entity("UserUser", b =>
+            modelBuilder.Entity("BlogAPI.Models.UserFriend", b =>
                 {
-                    b.Property<int>("FriendsId")
-                        .HasColumnType("integer");
-
                     b.Property<int>("UserId")
                         .HasColumnType("integer");
 
-                    b.HasKey("FriendsId", "UserId");
+                    b.Property<int>("FriendId")
+                        .HasColumnType("integer");
 
-                    b.HasIndex("UserId");
+                    b.HasKey("UserId", "FriendId");
 
-                    b.ToTable("UserUser");
+                    b.HasIndex("FriendId");
+
+                    b.ToTable("UserFriend");
                 });
 
             modelBuilder.Entity("BlogAPI.Models.Comment", b =>
@@ -230,19 +230,22 @@ namespace BlogAPI.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("UserUser", b =>
+            modelBuilder.Entity("BlogAPI.Models.UserFriend", b =>
                 {
-                    b.HasOne("BlogAPI.Models.User", null)
+                    b.HasOne("BlogAPI.Models.User", "Friend")
                         .WithMany()
-                        .HasForeignKey("FriendsId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .HasForeignKey("FriendId")
                         .IsRequired();
 
-                    b.HasOne("BlogAPI.Models.User", null)
-                        .WithMany()
+                    b.HasOne("BlogAPI.Models.User", "User")
+                        .WithMany("Friends")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Friend");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("BlogAPI.Models.Post", b =>
@@ -253,6 +256,8 @@ namespace BlogAPI.Migrations
             modelBuilder.Entity("BlogAPI.Models.User", b =>
                 {
                     b.Navigation("Comments");
+
+                    b.Navigation("Friends");
 
                     b.Navigation("Posts");
                 });

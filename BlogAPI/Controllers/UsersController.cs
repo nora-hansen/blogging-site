@@ -37,7 +37,8 @@ namespace BlogAPI.Controllers
                     Email = u.Email,
                     DisplayName = u.DisplayName,
                     IconUrl = u.IconUrl,
-                    ProfileId = u.ProfileId
+                    ProfileId = u.ProfileId,
+                    Friends = u.Friends
                 };
                 return users;
             }
@@ -51,7 +52,8 @@ namespace BlogAPI.Controllers
                                 Email = u.Email,
                                 DisplayName = u.DisplayName,
                                 IconUrl = u.IconUrl,
-                                ProfileId = u.ProfileId
+                                ProfileId = u.ProfileId,
+                                Friends = u.Friends
                             };
                 return users;
             }
@@ -72,8 +74,8 @@ namespace BlogAPI.Controllers
                     DisplayName = u.DisplayName,
                     IconUrl = u.IconUrl,
                     Posts = u.Posts,
-                    ProfileId = u.ProfileId
-
+                    ProfileId = u.ProfileId,
+                    Friends = u.Friends
                 }).SingleOrDefaultAsync(u => u.Id == id);
 
             if(user == null)
@@ -107,8 +109,6 @@ namespace BlogAPI.Controllers
                                 where u.Email == user.Email
                                 select new User();
 
-            Console.WriteLine(existingEmail);
-
             if (existingEmail.Any()) 
             {
                 return BadRequest("A user with this email already exists!");
@@ -139,11 +139,6 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> PutUser(User user, int id)
         {
-            //if (id != user.Id)
-            //{
-            //    return BadRequest();
-            //}
-
             User? originalUser = _context.Users.FirstOrDefault(u => u.Id == id);
             if (originalUser == null)
                 return NotFound();
