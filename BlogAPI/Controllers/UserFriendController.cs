@@ -31,8 +31,10 @@ namespace BlogAPI.Controllers
                           where f.UserId == id
                           select new UserFriend()
                           {
-                              UserId = f.UserId,
-                              FriendId = f.FriendId,
+                              //User = f.User,
+                              //UserId = f.UserId,
+                              Friend = f.Friend,
+                              //FriendId = f.FriendId,
                           };
             return friends;
         }
@@ -65,7 +67,14 @@ namespace BlogAPI.Controllers
                 return BadRequest("Already friends!");
             }
 
-            _context.UserFriend.Add(userFriend);
+            var user1 = _context.Users.FirstOrDefault(x => x.Id == userFriend.UserId);
+            var user2 = _context.Users.FirstOrDefault(x => x.Id == userFriend.FriendId);
+
+            _context.UserFriend.Add(new UserFriend()
+            {
+                UserId = userFriend.UserId,
+                FriendId = userFriend.FriendId,
+            });
 
             _context.UserFriend.Add(new UserFriend()
             {
