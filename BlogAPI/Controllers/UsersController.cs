@@ -109,8 +109,6 @@ namespace BlogAPI.Controllers
                                 where u.Email == user.Email
                                 select new User();
 
-            Console.WriteLine(existingEmail);
-
             if (existingEmail.Any()) 
             {
                 return BadRequest("A user with this email already exists!");
