@@ -23,16 +23,22 @@ namespace BlogAPI.Controllers
 
         /**
          * Get one user's friends. Currently two entries per friendship... Other way?
+         * TODO: !CRITICAL! When returning the friends, return a DTO. Right now, the password is in
+         *  the response.
          */
         [HttpGet("{id}")]
-        public IQueryable<UserFriend> GetFriendsOfUser(int id)
+        public IQueryable<UserFriendDTO> GetFriendsOfUser(int id)
         {
             var friends = from f in _context.UserFriend
                           where f.UserId == id
-                          select new UserFriend()
+                          select new UserFriendDTO()
                           {
-                              UserId = f.UserId,
-                              FriendId = f.FriendId,
+                              Friend = new UserDTO()
+                              {
+                                  Id = f.Friend.Id,
+                                  DisplayName = f.Friend.DisplayName,
+                                  IconUrl = f.Friend.IconUrl,
+                              }
                           };
             return friends;
         }
@@ -65,7 +71,14 @@ namespace BlogAPI.Controllers
                 return BadRequest("Already friends!");
             }
 
-            _context.UserFriend.Add(userFriend);
+            var user1 = _context.Users.FirstOrDefault(x => x.Id == userFriend.UserId);
+            var user2 = _context.Users.FirstOrDefault(x => x.Id == userFriend.FriendId);
+
+            _context.UserFriend.Add(new UserFriend()
+            {
+                UserId = userFriend.UserId,
+                FriendId = userFriend.FriendId,
+            });
 
             _context.UserFriend.Add(new UserFriend()
             {
