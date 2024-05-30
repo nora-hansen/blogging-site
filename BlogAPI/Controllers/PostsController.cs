@@ -229,6 +229,11 @@ namespace BlogAPI.Controllers
                 return NotFound();
             }
 
+            if(post.UserID != postingUser.Id)
+            {
+                return Forbid();
+            }
+
             _context.Posts.Remove(post);
             await _context.SaveChangesAsync();
 
