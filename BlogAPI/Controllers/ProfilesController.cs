@@ -34,7 +34,7 @@ namespace BlogAPI.Controllers
                 bgColor = p.bgColor,
                 fontColor = p.fontColor,
                 postColor = p.postColor,
-                Bio = p.Bio
+                bio = p.bio
             }).SingleOrDefaultAsync(p  => p.Id == id);
 
             if(profile == null)
@@ -70,7 +70,7 @@ namespace BlogAPI.Controllers
             if (profileToUpdate.bgColor != profile.bgColor && profile.bgColor!= null && profile.bgColor != "") profileToUpdate.bgColor = profile.bgColor;
             if (profileToUpdate.fontColor != profile.fontColor && profile.fontColor != null && profile.fontColor != "") profileToUpdate.fontColor = profile.fontColor;  
             if (profileToUpdate.postColor != profile.postColor && profile.postColor != null && profile.postColor != "") profileToUpdate.postColor = profile.postColor;
-            if (profileToUpdate.Bio != profile.Bio && profile.Bio != null && profile.Bio != "") profileToUpdate.Bio = profile.Bio;
+            if (profileToUpdate.bio != profile.bio && profile.bio != null && profile.bio != "") profileToUpdate.bio = profile.bio;
 
             _context.Entry(profileToUpdate).State = EntityState.Modified;
 

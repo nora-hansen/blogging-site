@@ -9,7 +9,7 @@ namespace BlogAPI.Models
 		public string? bgColor { get; set; } = null;
 		public string? fontColor { get; set; } = null;
 		public string? postColor { get; set; } = null;
-        public string? Bio { get; set; } = null;
+        public string? bio { get; set; } = null;
         public DateTime CreatedAt { get; set; }
 		public DateTime LastUpdated { get; set; }
 
