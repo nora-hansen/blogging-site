@@ -9,7 +9,7 @@ namespace BlogAPI.Models
         public string? Content { get; set; } = string.Empty;
         public DateTime PostDate { get; set; }
         public int UserID { get; set; }
-        public Visibility Visibility { get; set; } = Visibility.Public;
+        public Visibility Visibility { get; set; } = Visibility.Private;
         public bool IsDraft { get; set; }
         public ICollection<Comment>? Comments { get; set; }
 

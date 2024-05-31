@@ -46,6 +46,7 @@ namespace BlogAPI.Controllers
                                 PostDate = p.PostDate,
                                 UserID = p.UserID,
                                 IsDraft = p.IsDraft,
+                                Visibility = p.Visibility,
                                 Comments = p.Comments
                             };
                 return posts;
@@ -62,6 +63,7 @@ namespace BlogAPI.Controllers
                                 PostDate = p.PostDate,
                                 UserID = p.UserID,
                                 IsDraft = p.IsDraft,
+                                Visibility = p.Visibility,
                                 Comments = p.Comments
                             };
                 return posts;
@@ -78,6 +80,7 @@ namespace BlogAPI.Controllers
                                 PostDate = p.PostDate,
                                 UserID = p.UserID,
                                 IsDraft = p.IsDraft,
+                                Visibility = p.Visibility,
                                 Comments = p.Comments
                             };
                 return posts;
