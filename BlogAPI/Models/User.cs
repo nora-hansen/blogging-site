@@ -12,8 +12,6 @@ namespace BlogAPI.Models
         public string Password { get; set; } = string.Empty;
         public string DisplayName { get; set; } = string.Empty;
 
-        //public string Bio { get; set; } = string.Empty;
-
         public string? IconUrl { get; set; }
         public ICollection<UserFriend>? Friends { get; set; } = new List<UserFriend>();
         // Maybe in the future // public ICollection<User> Blocks { get; set; }

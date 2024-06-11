@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlogAPI.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 
 namespace BlogAPI.Controllers
 {
@@ -140,13 +142,19 @@ namespace BlogAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult> PutUser(User user, int id)
         {
+            var currentUser = HttpContext.User;
+
+            var authenticatedUser = _context.Users.SingleOrDefault(u => u.Email == currentUser.FindFirstValue(ClaimTypes.Email));
+
             User? originalUser = _context.Users.FirstOrDefault(u => u.Id == id);
             if (originalUser == null)
                 return NotFound();
 
-            if (user.DisplayName != originalUser.DisplayName) originalUser.DisplayName = user.DisplayName;
-            if (user.Email != originalUser.Email) originalUser.Email = user.Email;
-            if (user.IconUrl != originalUser.IconUrl) originalUser.IconUrl = user.IconUrl;
+            if (user.DisplayName != originalUser.DisplayName && !user.DisplayName.IsNullOrEmpty()) originalUser.DisplayName = user.DisplayName;
+            if (user.Email != originalUser.Email && !user.Email.IsNullOrEmpty()) originalUser.Email = user.Email;
+            if (user.IconUrl != originalUser.IconUrl && !user.IconUrl.IsNullOrEmpty()) originalUser.IconUrl = user.IconUrl;
+            if (user.Password != originalUser.Password && !user.Password.IsNullOrEmpty()) originalUser.Password = user.Password;
+
 
             _context.Entry(originalUser).State = EntityState.Modified;
 
